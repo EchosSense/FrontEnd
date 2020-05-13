@@ -1,35 +1,50 @@
 // ==UserScript==
-// @name         Bot Yandex v3
+// @name         Bot Yandex Full
 // @namespace    http://tampermonkey.net/
-// @version      1.0 [Final]
+// @version      1.2 [Final]
 // @description  Заработало без регистрации на Yandex и одновременно на ya.ru, yandex.ru
 // @author       You
 // @match        https://ya.ru/*
 // @match        https://yandex.ru/*
-// @match        https://xn----7sbab5aqcbiddtdj1e1g.xn--p1ai/*        // Сайт: https://музыкалка-онлайн.рф/
+// @match        https://xn----7sbab5aqcbiddtdj1e1g.xn--p1ai/*                       // Сайт: https://музыкалка-онлайн.рф/
 // @grant        none
 // ==/UserScript==
 
 // 1. Задаём Коллекцию ключевых слов
-
 let collection_words = ["Гобой", "Как звучит флейта", "Что такое валторна", "Как выглядит тромбон", "Музыкальные диктанты онлайн", "Виолончель"];
-let keyword
 
+// 2. Выбираем случайное слово из коллекции
+let random_word = collection_words[getRandom(0,collection_words.length)];
 
-let keyword  = keywords[getRandom(0,collection_words.length)];
+// 3. Проверяем наличие Сайта
+if (location.href == "https://ya.ru/") { F1(); }                                     // Производим действия на сайте https://ya.ru
+else if (location.host == "yandex.ru") { F2(); }                                     // Производим действия на сайте https://yandex.ru
+else if (location.href == "https://xn----7sbab5aqcbiddtdj1e1g.xn--p1ai/") { F3(); }  // Производим действия на сайте https://музыкалка-онлайн.рф/         
+else { alert("ЧТО-ТО ПОШЛО НЕ ТАК"); }                                               // Переходим на сайт https://ya.ru
+
+// 4. Время работы бота 3 мин = 180 000 мс
+setTimeout(()=>{location.href = "https://www.google.com/"}, 180000);                 // После завершения работы бота переходим на сайт https://www.google.com/ 
+
+// =================================== Функции ==============================================
+function F1()     // Функция: Действия на сайте https://ya.ru
+{   
+    return Math.floor(Math.random()*(max-min)+min);
+}
+
+// =================================== Функции ==============================================
+function F2()     // Функция: Действия на сайте https://yandex.ru
+{   
+    return Math.floor(Math.random()*(max-min)+min);
+}
+
+// =================================== Функции ==============================================
+function F3()     // Функция: Действия на сайте https://музыкалка-онлайн.рф/
+{   
+    return Math.floor(Math.random()*(max-min)+min);
+}
 
 // Вставили текст "Гобой" в форму поиска
 document.getElementsByName('text')[0].value = "Гобой";
-
-// Проверили наличие Сайта
-
-if (location.href == "https://ya.ru/") { F1(); }  // Производим действия на сайте https://ya.ru
-else if (location.host == "yandex.ru") { F2(); }  // Производим действия на сайте https://yandex.ru
-else if (location.href == "https://xn----7sbab5aqcbiddtdj1e1g.xn--p1ai/") { F3(); }  // Производим действия на сайте https://музыкалка-онлайн.рф/         
-else { alert("ЧТО-ТО ПОШЛО НЕ ТАК"); }            // Переходим на сайт https://ya.ru
-
-
-
 
 
 let B1_Ya= document.getElementsByClassName('button suggest2-form__button button_theme_websearch button_size_xl i-bem')[0];
