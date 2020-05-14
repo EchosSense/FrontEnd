@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Bot Yandex Full
+// @name         Bot Yandex Full v2
 // @namespace    http://tampermonkey.net/
 // @version      2.0.0 [Final]
 // @description  Заработало без регистрации на Yandex и одновременно на ya.ru, yandex.ru
@@ -10,69 +10,71 @@
 // @grant        none
 // ==/UserScript==
 
+// ===================================================================================================
+// ================================ Задаём Глобальные Переменные =====================================
 
-// 0. Задаём Нашу Страницу
-let my_site = 'xn----7sbab5aqcbiddtdj1e1g.xn--p1ai';
+let my_site = 'xn----7sbab5aqcbiddtdj1e1g.xn--p1ai';                                                     // Задаём Нашу Страницу
+                                                                                                         // Задаём Коллекцию ключевых слов
+let collection_words = ["Гобой", "Как звучит флейта", "Что такое валторна", "Как выглядит тромбон", "Музыкальные диктанты онлайн", "Виолончель", "Дед Мороз"];
+let random_word = collection_words[getRandom(0,collection_words.length)];                                // Выбираем случайное слово из коллекции
+let i=0;                                                                                                 // Задаём глобальные переменные для Функций
 
-// 1. Задаём Коллекцию ключевых слов
-let collection_words = ["Гобой", "Как звучит флейта", "Что такое валторна", "Как выглядит тромбон", "Музыкальные диктанты онлайн", "Виолончель", "Дед Мороз", "Лумтик"];
+// ================================ Проверяем наличие Сайта ===========================================
+if (location.href == "https://ya.ru/") { F1(); }                                                         // Производим действия на сайте https://ya.ru
+else if (location.host == "yandex.ru") { F2(); }                                                         // Производим действия на сайте https://yandex.ru
+else if (location.host == 'xn----7sbab5aqcbiddtdj1e1g.xn--p1ai') { F3(); }                               // Производим действия на сайте https://музыкалка-онлайн.рф/
+else { alert("ЧТО-ТО ПОШЛО НЕ ТАК"); }                                                                   // Переходим на сайт https://ya.ru
 
-// 2. Выбираем случайное слово из коллекции
-let random_word = collection_words[getRandom(0,collection_words.length)];
+// ================================ Время работы бота 1 мин = 60 000 мс ===============================
+setTimeout(()=>{location.href = "https://www.google.com/"}, 60000);                                      // После завершения работы бота переходим на сайт https://www.google.com/
 
-// 3. Проверяем наличие Сайта
-if (location.href == "https://ya.ru/") { F1(); }                                     // Производим действия на сайте https://ya.ru
-else if (location.host == "yandex.ru") { F2(); }                                     // Производим действия на сайте https://yandex.ru
-else if (location.host == 'xn----7sbab5aqcbiddtdj1e1g.xn--p1ai') { F3(); }           // Производим действия на сайте https://музыкалка-онлайн.рф/
-else { alert("ЧТО-ТО ПОШЛО НЕ ТАК"); }                                               // Переходим на сайт https://ya.ru
 
-// 4. Время работы бота 1 мин = 60 000 мс
-setTimeout(()=>{location.href = "https://www.google.com/"}, 60000);                  // После завершения работы бота переходим на сайт https://www.google.com/
-
+// ===================================================================================================
+// ======================================== Функции ==================================================
 // ============================ Функция 1: Действия на сайте https://ya.ru ===========================
 function F1()
-{
-    // Вставляем в форму поиска случайное ключевое слово
-    document.getElementsByName('text')[0].value = random_word;
-
-    // Нажимаем кнопку Поиск
-    let b_ya = document.getElementsByClassName('button suggest2-form__button button_theme_websearch button_size_xl i-bem')[0];
-    setTimeout(()=>b_ya.click(), getRandom(1000,2000));
+{                                                                                                        // Вводим ключевое слово и переходим к поиску
+    let X1_text = document.getElementsByName('text')[0];
+    var X1_ya = document.getElementsByClassName('button suggest2-form__button button_theme_websearch button_size_xl i-bem')[0];
+    let X1_timerId = setInterval(()=>{time_word(X1_text,X1_timerId,X1_ya)},getRandom(200,500));
 }
 
-// ================================= Функция 2: Действия на сайте https://yandex.ru =================================
+// ===================================================================================================
+// ================================= Функция 2: Действия на сайте https://yandex.ru ==================
 function F2()
 {
-    let b_search = document.getElementsByClassName('button mini-suggest__button button_theme_websearch button_size_ws-head i-bem')[0];
-    let flag = false;                                                               // Флаг наличия найденой ссылки на странице (в коллекции)
+    let X2_yandex = document.getElementsByClassName('button mini-suggest__button button_theme_websearch button_size_ws-head i-bem')[0];
+    let flag = false;                                                                                   // Флаг наличия найденой ссылки на странице (в коллекции)
 
-    if (b_search != undefined)      // ============================================ // Кнопка ещё не нажата
+    if (X2_yandex != undefined)                                                                          // Нажимаем кнопку "Поиска" (Кнопка "Поиска" ещё не нажата)
     {
-        document.getElementsByName('text')[0].value = random_word;                  // Вставляем в форму поиска случайное ключевое слово
-        setTimeout(()=>b_search.click(), getRandom(1000,2000));
+        let X2_text = document.getElementsByName('text')[0];
+        let X2_timerId = setInterval(()=>{time_word(X2_text,X2_timerId,X2_yandex)},getRandom(200,500));
+
+        //        document.getElementsByName('text')[0].value = random_word;                             // Мгновенный ввод текста в поле поиска
+        //        setTimeout(()=>X2_yandex.click(), getRandom(1000,2000));
     }
-    else                           // ============================================= // Кнопка уже была нажата
+
+    else                                                                                                // Переходим по ссылке (Кнопка уже была нажата)
     {
-        let ALL_SITE = document.querySelectorAll("a");                              // Получили Коллекцию ссылок на странице https://yandex.ru
-        for (let SITE of ALL_SITE)                                                  // Поиск нашей ссылки на сайт https://музыкалка-онлайн.рф/
+        let ALL_SITE = document.querySelectorAll("a");
+        for (let SITE of ALL_SITE)                                                                      // Поиск ссылки в коллекции и переход по ней
         {
-            if(SITE.href.indexOf(my_site)!=-1)                                      // Сравниваем Наш текст my_site с элементом коллекции
+            if(SITE.href.indexOf(my_site)!=-1)
             {
                 SITE.setAttribute('target', '_self');
-                let flag = true;
-                setTimeout(()=>SITE.click(), getRandom(1000,2000));
+                flag = true;
+                setTimeout(()=>{SITE.click()}, getRandom(3000,4000));
             }
-
         }
-                                   // ============================================= // Нажимаем кнопку "Дальше"
 
         let number_page = document.getElementsByClassName('pager__item pager__item_current_yes pager__item_kind_page')[0].innerText;
 
-        if ((number_page==10)&&(flag==false))  // ================================ // Сайт не нашли на 10 страницах
-        {
-            setTimeout(()=>{location.href = "https://google.com"}, getRandom(1000,2000));
-        }
-        else if (flag==false)                  // ================================ // Сайт не нашли на одной странице
+        if ((number_page==10)&&(flag==false))                                                           // Переходим на Google (Сайт не нашли на 10 страницах)
+        {   setTimeout(()=>{location.href = "https://google.com"}, getRandom(1000,2000));  }
+
+
+        else if (flag==false)                                                                           // Переходим "Дальше" (Сайт не нашли на одной странице)
         {
             let b_next=document.getElementsByClassName('link link_theme_none link_target_serp pager__item pager__item_kind_next i-bem')[0];
             b_next.setAttribute('target', '_self');
@@ -81,37 +83,41 @@ function F2()
     }
 }
 
-// ====================== Функция 3: Действия на сайте https://музыкалка-онлайн.рф/ ======================
+// ===================================================================================================
+// ====================== Функция 3: Действия на сайте https://музыкалка-онлайн.рф/ ==================
 function F3()
 {
+    let random_link = getRandom(0,document.links.length);                                            // Случайная ссылка на странице
+    let flag = document.links[random_link].href.indexOf('xn----7sbab5aqcbiddtdj1e1g.xn--p1ai');
 
-    let random_link = getRandom(0,document.links.length);                                            // Взяли случайную ссылку с открытой страницы сайта https://музыкалка-онлайн.рф/
-    let flag = document.links[random_link].href.indexOf('xn----7sbab5aqcbiddtdj1e1g.xn--p1ai');      // Наличие/отсутствие текста в строке ссылки
+    if (flag!=-1)                                                                                    // Ссылка не принадлежит сайту https://музыкалка-онлайн.рф/
+    {
+        if (getRandom(0,100)>10) { setTimeout(()=>{document.links[random_link].click();}, getRandom(3000,4000)); }          //  Шанс 80% => Переходим по случайной ссылке
+        else  { location.href = "https://ya.ru"; }                                                                          //  Шанс 20% => Переходим на сайт https://ya.ru
+    }
 
-    if (flag!=-1)                                       //  Проверили принадлежность ссылки к сайту https://музыкалка-онлайн.рф/
-    {
-        if (getRandom(0,100)>20)                        //  Фактор случайности нахождения на сайте https://музыкалка-онлайн.рф/
-        {
-            setTimeout(()=>{document.links[random_link].click();}, getRandom(1000,2000));             //  Переходим по случайной ссылке
-        }
-        else
-        {
-            location.href = "https://ya.ru";            //  Возращаемся на сайт https://ya.ru
-        }
-    }
-    else
-    {
-        location.href = 'https://xn----7sbab5aqcbiddtdj1e1g.xn--p1ai/';
-    }
+    else { location.href = 'https://xn----7sbab5aqcbiddtdj1e1g.xn--p1ai/'; }                         // Ссылка принадлежит сайту https://музыкалка-онлайн.рф/ => Переход по ссылке
 
 }
+// ===================================================================================================
+// ============= Функция: Возращает случайное число от "min" до "max" число ==========================
 
-// ============= Функция: Возращает случайное число от "min" до "max" число =================
+function getRandom(min,max) { return Math.floor(Math.random()*(max-min)+min); }
 
-function getRandom(min,max)
+// ===================================================================================================
+// ========================== Функция: Ввод букв в поле формы поиска =================================
+
+function time_word(input_form,timerId,button_click)
 {
-    return Math.floor(Math.random()*(max-min)+min);
+    input_form.value += random_word[i];
+    i++;
+    if (i==(random_word.length))
+    {
+        clearInterval(timerId);
+        i = 0;
+        button_click.click();
+    }
 }
-
-// =================================== Функции ==============================================
+// =================================== Функции =======================================================
+// ===================================================================================================
 
