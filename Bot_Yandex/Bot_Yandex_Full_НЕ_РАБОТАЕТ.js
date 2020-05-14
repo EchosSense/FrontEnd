@@ -128,7 +128,7 @@ function time_word(input_form,timerId)
     i++;
     if (i==(random_word.length))
     {
-        clearInterval(timerId); i = 0; flag2=true;
+        clearInterval(timerId); i = 0;
     }
 }
 // =================================== Функции ==============================================
